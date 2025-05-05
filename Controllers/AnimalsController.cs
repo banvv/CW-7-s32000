@@ -155,13 +155,12 @@ public class AnimalsController(IDbService dbService) : ControllerBase
     [HttpPut("clients/{id}/trips/{tripId}")]
     public async Task<IActionResult> AddClientToTrip(
             [FromRoute] int id,
-            [FromRoute] int tripId,
-            [FromBody] AnimalCreateDTO body
+            [FromRoute] int tripId
         )
     {
         try
         {
-            await dbService.AddClientToTrip(id, tripId, body);
+            await dbService.AddClientToTrip(id, tripId);
             return Ok();
         }
         catch (NotFoundException e)
