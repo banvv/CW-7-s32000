@@ -14,6 +14,10 @@ public interface IDbService
     public Task RemoveAnimalByIdAsync(int id);
     public Task<IEnumerable<VisitGetDTO>> GetVisitsByAnimalIdAsync(int animalId);
     public Task<Visit> CreateVisitAsync(int animalId, VisitCreateDTO visit);
+    public Task<IEnumerable<TripGetDTO>> GetTrips();
+    public Task<IEnumerable<TripGetDTO>> GetTripsByClientId(int id);
+    public Task AddClientToTrip(int id, int tripId, AnimalCreateDTO body);
+    public Task RemoveClientFromTrip(int id);
 }
 
 public class DbService(IConfiguration config) : IDbService
@@ -199,5 +203,25 @@ public class DbService(IConfiguration config) : IDbService
             Price = visit.Price,
             AnimalId = animalId
         };
+    }
+
+    public Task<IEnumerable<TripGetDTO>> GetTrips()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IEnumerable<TripGetDTO>> GetTripsByClientId(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task AddClientToTrip(int id, int tripId, AnimalCreateDTO body)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task RemoveClientFromTrip(int id)
+    {
+        throw new NotImplementedException();
     }
 }

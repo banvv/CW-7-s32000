@@ -8,7 +8,7 @@ using SqlClient.Services;
 namespace SqlClient.Controllers;
 
 [ApiController]
-[Route("api/[controller]/[action]")]
+[Route("api/[controller]")]
 public class AnimalsController(IDbService dbService) : ControllerBase
 {
     [HttpGet]
@@ -76,7 +76,7 @@ public class AnimalsController(IDbService dbService) : ControllerBase
 
     [HttpGet("{id}/visits")]
     public async Task<IActionResult> GetVisitsByAnimalId(
-        [FromRoute]int id
+        [FromRoute] int id
     )
     {
         try
@@ -91,7 +91,7 @@ public class AnimalsController(IDbService dbService) : ControllerBase
 
     [HttpPost("{id}/visits")]
     public async Task<IActionResult> AddVisit(
-        [FromRoute] int id, 
+        [FromRoute] int id,
         [FromBody] VisitCreateDTO body
     )
     {
@@ -105,5 +105,87 @@ public class AnimalsController(IDbService dbService) : ControllerBase
             return NotFound(e.Message);
         }
     }
-    
+
+    //mine
+    [HttpGet("trips")]
+    public async Task<ActionResult> GetAllTrips()
+    {
+        try
+        {
+            return Ok(await dbService.GetTrips());
+        }
+        catch (System.Exception e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+
+    [HttpGet("clients/{id}/trips")]
+    public async Task<ActionResult> GetAllTripsByClientId(
+                [FromRoute] int id
+    )
+    {
+        try
+        {
+            return Ok(await dbService.GetTripsByClientId(id));
+        }
+        catch (System.Exception e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+
+    [HttpPost("clients")]
+    public async Task<IActionResult> AddClient(
+            [FromRoute] int id,
+            [FromBody] ClientCreateDTO body
+        )
+    {
+        try
+        {
+            var client = await dbService.CreateClient(id, body);
+            return Created($"clients/{client.Id}", client);
+        }
+        catch (NotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+
+    [HttpPut("clients/{id}/trips/{tripId}")]
+    public async Task<IActionResult> AddClientToTrip(
+            [FromRoute] int id,
+            [FromRoute] int tripId,
+            [FromBody] AnimalCreateDTO body
+        )
+    {
+        try
+        {
+            await dbService.AddClientToTrip(id, tripId, body);
+            return Ok();
+        }
+        catch (NotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+
+    [HttpDelete("clients/{id}/trips/{tripId}")]
+    public async Task<IActionResult> RemoveClientFromTrip(
+            [FromRoute] int id,
+            [FromRoute] int tripId
+    )
+    {
+        try
+        {
+            await dbService.RemoveClientFromTrip(id);
+            return Ok();
+        }
+        catch (NotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
 }
+
+
