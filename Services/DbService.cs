@@ -1,9 +1,9 @@
 ﻿using Microsoft.Data.SqlClient;
-using VetSqlClient.Exceptions;
-using VetSqlClient.Models;
-using VetSqlClient.Models.DTOs;
+using SqlClient.Exceptions;
+using SqlClient.Models;
+using SqlClient.Models.DTOs;
 
-namespace VetSqlClient.Services;
+namespace SqlClient.Services;
 
 public interface IDbService
 {

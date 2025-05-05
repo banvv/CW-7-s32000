@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using VetSqlClient.Exceptions;
-using VetSqlClient.Models;
-using VetSqlClient.Models.DTOs;
-using VetSqlClient.Services;
+using SqlClient.Exceptions;
+using SqlClient.Models;
+using SqlClient.Models.DTOs;
+using SqlClient.Services;
 
-namespace VetSqlClient.Controllers;
+namespace SqlClient.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]/[action]")]
 public class AnimalsController(IDbService dbService) : ControllerBase
 {
     [HttpGet]

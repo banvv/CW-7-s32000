@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace VetSqlClient.Models.DTOs;
+namespace SqlClient.Models.DTOs;
 
 public class VisitCreateDTO
 {

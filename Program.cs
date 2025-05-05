@@ -1,4 +1,4 @@
-using VetSqlClient.Services;
+using SqlClient.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
