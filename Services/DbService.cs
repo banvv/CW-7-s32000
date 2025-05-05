@@ -16,8 +16,9 @@ public interface IDbService
     public Task<Visit> CreateVisitAsync(int animalId, VisitCreateDTO visit);
     public Task<IEnumerable<TripGetDTO>> GetTrips();
     public Task<IEnumerable<TripGetDTO>> GetTripsByClientId(int id);
-    public Task AddClientToTrip(int id, int tripId, AnimalCreateDTO body);
+    public Task AddClientToTrip(int id, int tripId);
     public Task RemoveClientFromTrip(int id);
+    public Task<Client> CreateClient(int id, ClientCreateDTO body);
 }
 
 public class DbService(IConfiguration config) : IDbService
@@ -205,22 +206,46 @@ public class DbService(IConfiguration config) : IDbService
         };
     }
 
-    public Task<IEnumerable<TripGetDTO>> GetTrips()
+    public async Task<IEnumerable<TripGetDTO>> GetTrips()
+    {
+        var result = new List<TripGetDTO>();
+        await using var connection = new SqlConnection(_connectionString);
+        const string sql = "select ID, Name, Weight, Category, CoatColor from Animals";
+        await using var command = new SqlCommand(sql, connection);
+        await connection.OpenAsync();
+        await using var reader = await command.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            result.Add(new TripGetDTO
+            {
+                Id = reader.GetInt32(0),
+                Name = reader.GetString(1),
+                Description = reader.GetString(2),
+                DateFrom = reader.GetInt32(3),
+                DateTo = reader.GetInt32(4),
+                MaxPeople = reader.GetInt33(4),
+            });
+        }
+
+        return result;
+    }
+
+    public async Task<IEnumerable<TripGetDTO>> GetTripsByClientId(int id)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<TripGetDTO>> GetTripsByClientId(int id)
+    public async Task AddClientToTrip(int id, int tripId)
     {
         throw new NotImplementedException();
     }
 
-    public Task AddClientToTrip(int id, int tripId, AnimalCreateDTO body)
+    public async Task RemoveClientFromTrip(int id)
     {
         throw new NotImplementedException();
     }
 
-    public Task RemoveClientFromTrip(int id)
+    public async Task<Client> CreateClient(int id, ClientCreateDTO body)
     {
         throw new NotImplementedException();
     }
