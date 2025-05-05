@@ -17,7 +17,7 @@ public interface IDbService
     public Task<IEnumerable<TripGetDTO>> GetTrips();
     public Task<IEnumerable<TripGetDTO>> GetTripsByClientId(int id);
     public Task AddClientToTrip(int id, int tripId);
-    public Task RemoveClientFromTrip(int id);
+    public Task RemoveClientFromTrip(int id, int tripId);
     public Task<Client> CreateClient(int id, ClientCreateDTO body);
 }
 
@@ -210,7 +210,7 @@ public class DbService(IConfiguration config) : IDbService
     {
         var result = new List<TripGetDTO>();
         await using var connection = new SqlConnection(_connectionString);
-        const string sql = "select ID, Name, Weight, Category, CoatColor from Animals";
+        const string sql = "select ID, Name, Description, DateFrom, DateTo, MaxPeople from Animals";
         await using var command = new SqlCommand(sql, connection);
         await connection.OpenAsync();
         await using var reader = await command.ExecuteReaderAsync();
@@ -232,17 +232,83 @@ public class DbService(IConfiguration config) : IDbService
 
     public async Task<IEnumerable<TripGetDTO>> GetTripsByClientId(int id)
     {
-        throw new NotImplementedException();
+        await using var connection = new SqlConnection(_connectionString);
+        const string sql = "select ID, Name, Description, DateFrom, DateTo, MaxPeople from GetAnimalsDetailsAsync join client_trip on IdTrip = Id where IdClient = @id";
+        await using var command = new SqlCommand(sql, connection);
+        command.Parameters.AddWithValue("@id", id);
+        await connection.OpenAsync();
+        await using var reader = await command.ExecuteReaderAsync();
+        if (!await reader.ReadAsync())
+        {
+            throw new NotFoundException($"Client with id: {id} does not exist");
+        }
+
+        var result = new List<TripGetDTO>();
+        do 
+        {
+            result.Add(new TripGetDTO
+            {
+                Id = reader.GetInt32(0),
+                Name = reader.GetString(1),
+                Description = reader.GetString(2),
+                DateFrom = reader.GetInt32(3),
+                DateTo = reader.GetInt32(4),
+                MaxPeople = reader.GetInt33(4),
+            });
+        } while (await reader.ReadAsync());
+
+        return result;
     }
 
     public async Task AddClientToTrip(int id, int tripId)
     {
-        throw new NotImplementedException();
+        //TODO: join
+        var result = new List<TripGetDTO>();
+        await using var connection = new SqlConnection(_connectionString);
+        const string sql = "select ID, Name, Description, DateFrom, DateTo, MaxPeople from Animals";
+        await using var command = new SqlCommand(sql, connection);
+        await connection.OpenAsync();
+        await using var reader = await command.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            result.Add(new TripGetDTO
+            {
+                Id = reader.GetInt32(0),
+                Name = reader.GetString(1),
+                Description = reader.GetString(2),
+                DateFrom = reader.GetInt32(3),
+                DateTo = reader.GetInt32(4),
+                MaxPeople = reader.GetInt33(4),
+            });
+        }
     }
 
-    public async Task RemoveClientFromTrip(int id)
+    public async Task RemoveClientFromTrip(int id, int tripId)
     {
-        throw new NotImplementedException();
+        await using var connection = new SqlConnection(_connectionString);
+        const string sql = "select ID, Name, Description, DateFrom, DateTo, MaxPeople from GetAnimalsDetailsAsync join client_trip on IdTrip = Id where IdClient = @id and ";
+        await using var command = new SqlCommand(sql, connection);
+        command.Parameters.AddWithValue("@id", id);
+        await connection.OpenAsync();
+        await using var reader = await command.ExecuteReaderAsync();
+        if (!await reader.ReadAsync())
+        {
+            throw new NotFoundException($"Association with id: {id} does not exist");
+        }
+
+        var result = new List<TripGetDTO>();
+        do
+        {
+            result.Add(new TripGetDTO
+            {
+                Id = reader.GetInt32(0),
+                Name = reader.GetString(1),
+                Description = reader.GetString(2),
+                DateFrom = reader.GetInt32(3),
+                DateTo = reader.GetInt32(4),
+                MaxPeople = reader.GetInt33(4),
+            });
+        } while (await reader.ReadAsync());
     }
 
     public async Task<Client> CreateClient(int id, ClientCreateDTO body)

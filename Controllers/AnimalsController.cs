@@ -177,7 +177,7 @@ public class AnimalsController(IDbService dbService) : ControllerBase
     {
         try
         {
-            await dbService.RemoveClientFromTrip(id);
+            await dbService.RemoveClientFromTrip(id, tripId);
             return Ok();
         }
         catch (NotFoundException e)
